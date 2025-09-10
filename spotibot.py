@@ -13,7 +13,7 @@ def send_message_to_chatbot(message: str) -> Dict[str, Any]:
     """
     try:
         payload = {
-            "message": message
+            "message": message  # ← CHANGÉ ICI (était "chatInput")
         }
         
         headers = {
@@ -26,18 +26,25 @@ def send_message_to_chatbot(message: str) -> Dict[str, Any]:
             headers=headers,
             timeout=30
         )
-
-        # Debug : afficher le contenu brut
-        print(f"Status Code: {response.status_code}")
-        print(f"Response Headers: {response.headers}")
-        print(f"Response Text: {response.text[:500]}")  # Premiers 500 caractères
-        
         
         if response.status_code == 200:
-            return {
-                "success": True,
-                "data": response.json()
-            }
+            try:
+                # Nettoyer la réponse (enlever le '=' au début)
+                response_text = response.text.strip()
+                if response_text.startswith('='):
+                    response_text = response_text[1:]
+                
+                # Parser le JSON
+                data = json.loads(response_text)
+                return {
+                    "success": True,
+                    "data": data
+                }
+            except json.JSONDecodeError as e:
+                return {
+                    "success": False,
+                    "error": f"Erreur de parsing JSON: {str(e)}"
+                }
         else:
             return {
                 "success": False,
@@ -87,8 +94,7 @@ def display_chat_interface():
             if "chart_data" in message and message["chart_data"]:
                 try:
                     chart_data = message["chart_data"]
-                    # Adapter selon le type de graphique retourné par N8N
-                    st.json(chart_data)  # Pour le moment, afficher en JSON
+                    st.json(chart_data)
                 except Exception as e:
                     st.error(f"Erreur d'affichage du graphique: {e}")
     
@@ -131,7 +137,7 @@ def display_chat_interface():
                         # Afficher le graphique si présent
                         if chart_data:
                             try:
-                                st.json(chart_data)  # À adapter selon votre format
+                                st.json(chart_data)
                             except Exception as e:
                                 st.error(f"Erreur d'affichage du graphique: {e}")
                         
