@@ -26,6 +26,12 @@ def send_message_to_chatbot(message: str) -> Dict[str, Any]:
             headers=headers,
             timeout=30
         )
+
+        # Debug : afficher le contenu brut
+        print(f"Status Code: {response.status_code}")
+        print(f"Response Headers: {response.headers}")
+        print(f"Response Text: {response.text[:500]}")  # Premiers 500 caractères
+        
         
         if response.status_code == 200:
             return {
