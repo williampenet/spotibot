@@ -13,7 +13,7 @@ def send_message_to_chatbot(message: str) -> Dict[str, Any]:
     """
     try:
         payload = {
-            "chatInput": message
+            "message": message
         }
         
         headers = {
