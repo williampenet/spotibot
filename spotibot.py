@@ -5,7 +5,7 @@ import time
 from typing import Dict, Any
 
 # Configuration du chatbot N8N
-WEBHOOK_URL = "https://wip.app.n8n.cloud/webhook/ZGOIemS72pnVlaK3"
+WEBHOOK_URL = "https://wip.app.n8n.cloud/webhook/spotibot"
 
 def send_message_to_chatbot(message: str) -> Dict[str, Any]:
     """
