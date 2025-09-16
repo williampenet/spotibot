@@ -74,7 +74,7 @@ def display_chat_interface():
     st.header("💬 Explore William's Spotify Data")
     
     # Context for recruiters
-        st.markdown("ℹ️ About this project")
+    with st.expander("ℹ️ About this project", expanded=False):
         st.markdown("""
         **A technical challenge by William Pénet, Product Manager**
         
