@@ -74,7 +74,7 @@ def display_chat_interface():
     st.header("💬 Explore William's Spotify Data")
     
     # Context for recruiters
-    with st.expander("ℹ️ About this project", expanded=False):
+        st.markdown("ℹ️ About this project")
         st.markdown("""
         **A technical challenge by William Pénet, Product Manager**
         
@@ -86,15 +86,13 @@ def display_chat_interface():
         **Tech stack:** Python • Streamlit • Supabase • SQL • Spotify API • Plotly
         """)
     
-    st.write("Query the chatbot about music taste and listening habits.")
-    
     # Initialize chat history
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
         # Professional welcome message
         welcome_msg = {
             "role": "assistant",
-            "content": """Welcome! I'm the data assistant for this project. 
+            "content": """Welcome! I'm Spotibot. 
 
 I can analyze and visualize William's Spotify data to reveal:
 
