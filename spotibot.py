@@ -71,16 +71,45 @@ def display_chat_interface():
     """
     Interface de chat dans Streamlit
     """
-    st.header("🎵 Assistant Musical William")
-    st.write("Posez vos questions sur les données Spotify de William !")
+    st.header("💬 Explore William's Spotify Data")
     
-    # Initialiser l'historique du chat
+    # Context for recruiters
+    with st.expander("ℹ️ About this project", expanded=False):
+        st.markdown("""
+        **A technical challenge by William Pénet, Product Manager**
+        
+        This side-project was developed in collaboration with Claude (LLM) to:
+        - 🎯 Demonstrate my data project management skills
+        - 💻 Showcase my ability to rapidly prototype technical solutions
+        - 🤝 Illustrate my aptitude for leveraging AI to create value
+        
+        **Tech stack:** Python • Streamlit • Supabase • SQL • Spotify API • Plotly
+        """)
+    
+    st.write("Query the chatbot about music taste and listening habits.")
+    
+    # Initialize chat history
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
-        # Message d'accueil
+        # Professional welcome message
         welcome_msg = {
             "role": "assistant",
-            "content": "Bonjour ! Je suis l'assistant musical de William. Je peux analyser ses données Spotify : artistes préférés, tendances d'écoute, découvertes musicales, etc. Que voulez-vous savoir ?",
+            "content": """Welcome! I'm the data assistant for this project. 
+
+I can analyze and visualize William's Spotify data to reveal:
+• 📊 His favorite artists and music genres
+• 📈 The evolution of his musical taste over time
+• 🎵 Audio features of his tracks (energy, tempo, valence...)
+• 🌍 His listening patterns (hours, days, seasonality)
+• 🔍 Surprising insights about his personality through music
+
+**Sample questions:** 
+- "What are the top 10 most played artists?"
+- "How do his music tastes evolve throughout the year?"
+- "What time of day does William listen to music most?"
+- "Show me the energy distribution of his favorite tracks"
+
+Feel free to explore the data to get to know William better!""",
             "timestamp": time.time()
         }
         st.session_state.chat_history.append(welcome_msg)
