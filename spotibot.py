@@ -96,16 +96,11 @@ def display_chat_interface():
             "content": """Welcome! I'm Spotibot. 
 
 I can analyze and visualize William's Spotify data to reveal:
-
-• His favorite artists and music genres
-
-• The evolution of his musical taste over time
-
-• Audio features of his tracks (energy, tempo, valence...)
-
-• His listening patterns (hours, days, seasonality)
-
-• Surprising insights about his personality through music
+- His favorite artists and music genres
+- The evolution of his musical taste over time
+- Audio features of his tracks (energy, tempo, valence...)
+- His listening patterns (hours, days, seasonality)
+- Surprising insights about his personality through music
 
 **Sample questions:** 
 - "What are the top 10 most played artists?"
