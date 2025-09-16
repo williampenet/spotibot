@@ -122,7 +122,7 @@ Feel free to explore the data to get to know William better!""",
     for message in st.session_state.chat_history:
         # Pour l'assistant, utiliser l'avatar personnalisé
         if message["role"] == "assistant":
-            with st.chat_message("assistant", avatar="https://your-server.com/spotibot-avatar.png"):
+            with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
                 st.write(message["content"])
         else:
             with st.chat_message(message["role"]):
@@ -151,7 +151,7 @@ Feel free to explore the data to get to know William better!""",
             st.write(prompt)
         
         # Afficher un spinner pendant le traitement
-        with st.chat_message("assistant", avatar="https://your-server.com/spotibot-avatar.png"):
+        with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
             with st.spinner("Processing..."):
                 # Envoyer le message au chatbot N8N
                 response = send_message_to_chatbot(prompt)
