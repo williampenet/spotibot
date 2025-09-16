@@ -67,89 +67,20 @@ def send_message_to_chatbot(message: str) -> Dict[str, Any]:
             "error": f"Erreur inattendue: {str(e)}"
         }
 
-import streamlit as st
-import requests
-import json
-import time
-from typing import Dict, Any
-
-# Configuration du chatbot N8N
-WEBHOOK_URL = "https://wip.app.n8n.cloud/webhook/spotibot"
-
-def send_message_to_chatbot(message: str) -> Dict[str, Any]:
-    """
-    Envoie un message au chatbot N8N et récupère la réponse
-    """
-    try:
-        payload = {
-            "message": message  # ← CHANGÉ ICI (était "chatInput")
-        }
-        
-        headers = {
-            "Content-Type": "application/json"
-        }
-        
-        response = requests.post(
-            WEBHOOK_URL,
-            json=payload,
-            headers=headers,
-            timeout=30
-        )
-        
-        if response.status_code == 200:
-            try:
-                # Nettoyer la réponse (enlever le '=' au début)
-                response_text = response.text.strip()
-                if response_text.startswith('='):
-                    response_text = response_text[1:]
-                
-                # Parser le JSON
-                data = json.loads(response_text)
-                return {
-                    "success": True,
-                    "data": data
-                }
-            except json.JSONDecodeError as e:
-                return {
-                    "success": False,
-                    "error": f"Erreur de parsing JSON: {str(e)}"
-                }
-        else:
-            return {
-                "success": False,
-                "error": f"Erreur HTTP {response.status_code}: {response.text}"
-            }
-            
-    except requests.exceptions.Timeout:
-        return {
-            "success": False,
-            "error": "Timeout: Le chatbot met trop de temps à répondre"
-        }
-    except requests.exceptions.RequestException as e:
-        return {
-            "success": False,
-            "error": f"Erreur de connexion: {str(e)}"
-        }
-    except Exception as e:
-        return {
-            "success": False,
-            "error": f"Erreur inattendue: {str(e)}"
-        }
-
 def display_chat_interface():
     """
     Interface de chat dans Streamlit
     """
-    st.header("💬 Explore William's Spotify Data")
+    st.header("Explore William's Spotify Data")
     
     # Context for recruiters - always visible
     st.markdown("""
     **A technical challenge by William Pénet, Product Manager**
     
     This side-project was developed in collaboration with Claude (LLM) to:
-    - 🎯 Demonstrate my data project management skills
-    - 💻 Showcase my ability to rapidly prototype technical solutions
-    - 🤝 Illustrate my aptitude for leveraging AI to create value
+    - Demonstrate my data project management skills
+    - Showcase my ability to rapidly prototype technical solutions
+    - Illustrate my aptitude for leveraging AI to create value
     
     **Tech stack:** Python • Streamlit • Supabase • SQL • Spotify API • Plotly
     """)
@@ -166,15 +97,15 @@ def display_chat_interface():
 
 I can analyze and visualize William's Spotify data to reveal:
 
-• 📊 His favorite artists and music genres
+• His favorite artists and music genres
 
-• 📈 The evolution of his musical taste over time
+• The evolution of his musical taste over time
 
-• 🎵 Audio features of his tracks (energy, tempo, valence...)
+• Audio features of his tracks (energy, tempo, valence...)
 
-• 🌍 His listening patterns (hours, days, seasonality)
+• His listening patterns (hours, days, seasonality)
 
-• 🔍 Surprising insights about his personality through music
+• Surprising insights about his personality through music
 
 **Sample questions:** 
 - "What are the top 10 most played artists?"
@@ -189,8 +120,13 @@ Feel free to explore the data to get to know William better!""",
     
     # Afficher l'historique du chat
     for message in st.session_state.chat_history:
-        with st.chat_message(message["role"]):
-            st.write(message["content"])
+        # Pour l'assistant, utiliser l'avatar personnalisé
+        if message["role"] == "assistant":
+            with st.chat_message("assistant", avatar="https://your-server.com/spotibot-avatar.png"):
+                st.write(message["content"])
+        else:
+            with st.chat_message(message["role"]):
+                st.write(message["content"])
             
             # Si le message contient des données de graphique, les afficher
             if "chart_data" in message and message["chart_data"]:
@@ -201,7 +137,7 @@ Feel free to explore the data to get to know William better!""",
                     st.error(f"Erreur d'affichage du graphique: {e}")
     
     # Zone de saisie du message
-    if prompt := st.chat_input("Tapez votre message ici..."):
+    if prompt := st.chat_input("Type your message here..."):
         # Ajouter le message utilisateur à l'historique
         user_message = {
             "role": "user",
@@ -215,8 +151,8 @@ Feel free to explore the data to get to know William better!""",
             st.write(prompt)
         
         # Afficher un spinner pendant le traitement
-        with st.chat_message("assistant"):
-            with st.spinner("William réfléchit..."):
+        with st.chat_message("assistant", avatar="https://your-server.com/spotibot-avatar.png"):
+            with st.spinner("Processing..."):
                 # Envoyer le message au chatbot N8N
                 response = send_message_to_chatbot(prompt)
                 
@@ -289,7 +225,7 @@ def main():
     display_chat_interface()
     
     # Bouton pour vider l'historique (optionnel)
-    if st.button("🗑️ Vider l'historique"):
+    if st.button("Clear history"):
         st.session_state.chat_history = []
         st.rerun()
 
