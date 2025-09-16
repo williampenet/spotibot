@@ -1,0 +1,15 @@
+[theme]
+# Couleur principale (jaune)
+primaryColor = "#6B3F02"
+
+# Couleur de fond de l'application
+backgroundColor = "#FED440"
+
+# Couleur de fond secondaire (pour les sidebars)
+secondaryBackgroundColor = "#F5D020"
+
+# Couleur du texte
+textColor = "#6B3F02"
+
+# Police utilisée
+font = "sans serif"
