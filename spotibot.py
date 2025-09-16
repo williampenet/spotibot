@@ -97,6 +97,7 @@ def display_chat_interface():
             "content": """Welcome! I'm the data assistant for this project. 
 
 I can analyze and visualize William's Spotify data to reveal:
+
 • 📊 His favorite artists and music genres
 
 • 📈 The evolution of his musical taste over time
