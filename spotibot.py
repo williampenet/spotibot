@@ -24,7 +24,7 @@ def send_message_to_chatbot(message: str) -> Dict[str, Any]:
             WEBHOOK_URL,
             json=payload,
             headers=headers,
-            timeout=30
+            timeout=60
         )
         
         if response.status_code == 200:
