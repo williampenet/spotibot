@@ -228,12 +228,10 @@ def main():
     # Interface de chat
     display_chat_interface()
     
-    # Bouton pour vider l'historique centré
-    _, button_col, _ = st.columns([1, 2, 1])
-    with button_col:
-        if st.button("Clear history"):
-            st.session_state.chat_history = []
-            st.rerun()
+    # Bouton pour vider l'historique
+    if st.button("Clear history"):
+        st.session_state.chat_history = []
+        st.rerun()
 
 if __name__ == "__main__":
     main()
