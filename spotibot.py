@@ -216,6 +216,45 @@ def main():
         layout="wide"
     )
     
+    # CSS personnalisé pour les polices et les headers
+    st.markdown("""
+    <style>
+    /* Import des polices */
+    @import url('https://fonts.googleapis.com/css2?family=Tiempos+Text:wght@400;500;600&display=swap');
+    
+    /* Note: Styrene nécessite une licence commerciale. 
+       J'utilise Work Sans comme alternative open-source similaire */
+    @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
+    
+    /* Headers avec Styrene/Work Sans et couleur personnalisée */
+    h1, h2, h3 {
+        font-family: 'Work Sans', sans-serif !important;
+        color: #D97757 !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Corps de texte avec Tiempos (ou fallback serif) */
+    p, .stMarkdown, .stText, div[data-testid="stMarkdownContainer"] {
+        font-family: 'Tiempos Text', Georgia, serif !important;
+    }
+    
+    /* Messages du chat */
+    .stChatMessage p {
+        font-family: 'Tiempos Text', Georgia, serif !important;
+    }
+    
+    /* Input du chat */
+    .stChatInput textarea {
+        font-family: 'Tiempos Text', Georgia, serif !important;
+    }
+    
+    /* Boutons avec la police des titres */
+    .stButton button {
+        font-family: 'Work Sans', sans-serif !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
     # Interface de chat
     display_chat_interface()
     
