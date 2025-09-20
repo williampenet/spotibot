@@ -72,13 +72,58 @@ def display_chat_interface():
     Interface de chat dans Streamlit
     """
     
-    # Initialize chat history
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-        # Professional welcome message
-        welcome_msg = {
-            "role": "assistant",
-            "content": """Welcome! I'm Spotibot. 
+    # Détection mobile via JavaScript et création de colonnes conditionnelles
+    st.markdown("""
+    <script>
+    // Détecte si l'utilisateur est sur mobile
+    var isMobile = window.matchMedia("(max-width: 768px)").matches;
+    // Passe l'info à Streamlit via un élément caché
+    document.addEventListener('DOMContentLoaded', function() {
+        var hiddenDiv = document.createElement('div');
+        hiddenDiv.id = 'device-type';
+        hiddenDiv.setAttribute('data-mobile', isMobile);
+        hiddenDiv.style.display = 'none';
+        document.body.appendChild(hiddenDiv);
+    });
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # Créer des colonnes seulement pour desktop (largeur > 768px)
+    # Sur mobile, utilise toute la largeur disponible
+    use_columns = True  # Par défaut, on assume desktop
+    
+    if use_columns:
+        # Configuration 3 colonnes : marge gauche (1), contenu (3), marge droite (1)
+        col_left, col_center, col_right = st.columns([1, 3, 1])
+        main_container = col_center
+    else:
+        # Sur mobile, pas de colonnes
+        main_container = st.container()
+    
+    with main_container:
+        st.header("Explore William's Spotify Data")
+        
+        # Context for recruiters - always visible
+        st.markdown("""
+        **A technical challenge by William Pénet, Product Manager**
+        
+        This side-project was developed in collaboration with Claude (LLM) to:
+        - Demonstrate my data project management skills
+        - Showcase my ability to rapidly prototype technical solutions
+        - Illustrate my aptitude for leveraging AI to create value
+        
+        **Tech stack:** Python • Streamlit • Supabase • SQL • Spotify API • Plotly
+        """)
+        
+        st.divider()
+        
+        # Initialize chat history
+        if "chat_history" not in st.session_state:
+            st.session_state.chat_history = []
+            # Professional welcome message
+            welcome_msg = {
+                "role": "assistant",
+                "content": """Welcome! I'm Spotibot. 
 
 I can analyze and visualize William's Spotify data to reveal:
 - His favorite artists and music genres
@@ -94,82 +139,93 @@ I can analyze and visualize William's Spotify data to reveal:
 - "Show me the energy distribution of his favorite tracks"
 
 Feel free to explore the data to get to know William better!""",
-            "timestamp": time.time()
-        }
-        st.session_state.chat_history.append(welcome_msg)
-    
-    # Afficher l'historique du chat
-    for message in st.session_state.chat_history:
-        # Pour l'assistant, utiliser l'avatar personnalisé
-        if message["role"] == "assistant":
-            with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
-                st.write(message["content"])
-        else:
-            with st.chat_message(message["role"]):
-                st.write(message["content"])
-            
-            # Si le message contient des données de graphique, les afficher
-            if "chart_data" in message and message["chart_data"]:
-                try:
-                    chart_data = message["chart_data"]
-                    st.json(chart_data)
-                except Exception as e:
-                    st.error(f"Erreur d'affichage du graphique: {e}")
-    
-    # Zone de saisie du message
-    if prompt := st.chat_input("Type your message here..."):
-        # Ajouter le message utilisateur à l'historique
-        user_message = {
-            "role": "user",
-            "content": prompt,
-            "timestamp": time.time()
-        }
-        st.session_state.chat_history.append(user_message)
+                "timestamp": time.time()
+            }
+            st.session_state.chat_history.append(welcome_msg)
         
-        # Afficher le message utilisateur
-        with st.chat_message("user"):
-            st.write(prompt)
-        
-        # Afficher un spinner pendant le traitement
-        with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
-            with st.spinner("Processing..."):
-                # Envoyer le message au chatbot N8N
-                response = send_message_to_chatbot(prompt)
+        # Afficher l'historique du chat
+        for message in st.session_state.chat_history:
+            # Pour l'assistant, utiliser l'avatar personnalisé
+            if message["role"] == "assistant":
+                with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
+                    st.write(message["content"])
+            else:
+                with st.chat_message(message["role"]):
+                    st.write(message["content"])
                 
-                if response["success"]:
+                # Si le message contient des données de graphique, les afficher
+                if "chart_data" in message and message["chart_data"]:
                     try:
-                        # Parser la réponse du chatbot
-                        bot_data = response["data"]
-                        
-                        # Extraire le texte de réponse
-                        if isinstance(bot_data, dict):
-                            bot_text = bot_data.get("text", "Réponse reçue sans texte")
-                            chart_data = bot_data.get("chart", None)
-                        else:
-                            bot_text = str(bot_data)
-                            chart_data = None
-                        
-                        # Afficher la réponse
-                        st.write(bot_text)
-                        
-                        # Afficher le graphique si présent
-                        if chart_data:
-                            try:
-                                st.json(chart_data)
-                            except Exception as e:
-                                st.error(f"Erreur d'affichage du graphique: {e}")
-                        
-                        # Ajouter à l'historique
-                        assistant_message = {
-                            "role": "assistant",
-                            "content": bot_text,
-                            "chart_data": chart_data,
-                            "timestamp": time.time()
-                        }
-                        st.session_state.chat_history.append(assistant_message)
-                        
+                        chart_data = message["chart_data"]
+                        st.json(chart_data)
                     except Exception as e:
-                        error_msg = f"Erreur lors du traitement de la réponse: {str(e)}"
+                        st.error(f"Erreur d'affichage du graphique: {e}")
+        
+        # Zone de saisie du message
+        if prompt := st.chat_input("Type your message here..."):
+            # Ajouter le message utilisateur à l'historique
+            user_message = {
+                "role": "user",
+                "content": prompt,
+                "timestamp": time.time()
+            }
+            st.session_state.chat_history.append(user_message)
+            
+            # Afficher le message utilisateur
+            with st.chat_message("user"):
+                st.write(prompt)
+            
+            # Afficher un spinner pendant le traitement
+            with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
+                with st.spinner("Processing..."):
+                    # Envoyer le message au chatbot N8N
+                    response = send_message_to_chatbot(prompt)
+                    
+                    if response["success"]:
+                        try:
+                            # Parser la réponse du chatbot
+                            bot_data = response["data"]
+                            
+                            # Extraire le texte de réponse
+                            if isinstance(bot_data, dict):
+                                bot_text = bot_data.get("text", "Réponse reçue sans texte")
+                                chart_data = bot_data.get("chart", None)
+                            else:
+                                bot_text = str(bot_data)
+                                chart_data = None
+                            
+                            # Afficher la réponse
+                            st.write(bot_text)
+                            
+                            # Afficher le graphique si présent
+                            if chart_data:
+                                try:
+                                    st.json(chart_data)
+                                except Exception as e:
+                                    st.error(f"Erreur d'affichage du graphique: {e}")
+                            
+                            # Ajouter à l'historique
+                            assistant_message = {
+                                "role": "assistant",
+                                "content": bot_text,
+                                "chart_data": chart_data,
+                                "timestamp": time.time()
+                            }
+                            st.session_state.chat_history.append(assistant_message)
+                            
+                        except Exception as e:
+                            error_msg = f"Erreur lors du traitement de la réponse: {str(e)}"
+                            st.error(error_msg)
+                            
+                            # Ajouter le message d'erreur à l'historique
+                            error_message = {
+                                "role": "assistant",
+                                "content": error_msg,
+                                "timestamp": time.time()
+                            }
+                            st.session_state.chat_history.append(error_message)
+                    else:
+                        error_msg = f"Erreur: {response['error']}"
                         st.error(error_msg)
                         
                         # Ajouter le message d'erreur à l'historique
@@ -179,17 +235,6 @@ Feel free to explore the data to get to know William better!""",
                             "timestamp": time.time()
                         }
                         st.session_state.chat_history.append(error_message)
-                else:
-                    error_msg = f"Erreur: {response['error']}"
-                    st.error(error_msg)
-                    
-                    # Ajouter le message d'erreur à l'historique
-                    error_message = {
-                        "role": "assistant",
-                        "content": error_msg,
-                        "timestamp": time.time()
-                    }
-                    st.session_state.chat_history.append(error_message)
 
 def main():
     """
@@ -243,10 +288,12 @@ def main():
     # Interface de chat
     display_chat_interface()
     
-    # Bouton pour vider l'historique (optionnel)
-    if st.button("Clear history"):
-        st.session_state.chat_history = []
-        st.rerun()
+    # Bouton pour vider l'historique centré sur desktop
+    _, col_button, _ = st.columns([1, 3, 1])
+    with col_button:
+        if st.button("Clear history"):
+            st.session_state.chat_history = []
+            st.rerun()
 
 if __name__ == "__main__":
     main()
