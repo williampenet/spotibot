@@ -94,29 +94,13 @@ def display_chat_interface():
     
     if use_columns:
         # Configuration 3 colonnes : marge gauche (1), contenu (3), marge droite (1)
-        col_left, col_center, col_right = st.columns([1, 3, 1])
+        col_left, col_center, col_right = st.columns([2, 3, 2])
         main_container = col_center
     else:
         # Sur mobile, pas de colonnes
         main_container = st.container()
     
     with main_container:
-        st.header("Explore William's Spotify Data")
-        
-        # Context for recruiters - always visible
-        st.markdown("""
-        **A technical challenge by William Pénet, Product Manager**
-        
-        This side-project was developed in collaboration with Claude (LLM) to:
-        - Demonstrate my data project management skills
-        - Showcase my ability to rapidly prototype technical solutions
-        - Illustrate my aptitude for leveraging AI to create value
-        
-        **Tech stack:** Python • Streamlit • Supabase • SQL • Spotify API • Plotly
-        """)
-        
-        st.divider()
-        
         # Initialize chat history
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
