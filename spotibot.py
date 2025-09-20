@@ -72,33 +72,12 @@ def display_chat_interface():
     Interface de chat dans Streamlit
     """
     
-    # Détection mobile via JavaScript et création de colonnes conditionnelles
-    st.markdown("""
-    <script>
-    // Détecte si l'utilisateur est sur mobile
-    var isMobile = window.matchMedia("(max-width: 768px)").matches;
-    // Passe l'info à Streamlit via un élément caché
-    document.addEventListener('DOMContentLoaded', function() {
-        var hiddenDiv = document.createElement('div');
-        hiddenDiv.id = 'device-type';
-        hiddenDiv.setAttribute('data-mobile', isMobile);
-        hiddenDiv.style.display = 'none';
-        document.body.appendChild(hiddenDiv);
-    });
-    </script>
-    """, unsafe_allow_html=True)
+        # Créer un layout centré style Claude.ai
+    # Ratio adapté pour un contenu centré lisible (environ 700-800px sur desktop)
+    _, main_col, _ = st.columns([1, 2, 1])
     
-    # Créer des colonnes seulement pour desktop (largeur > 768px)
-    # Sur mobile, utilise toute la largeur disponible
-    use_columns = True  # Par défaut, on assume desktop
-    
-    if use_columns:
-        # Configuration 3 colonnes : marge gauche (1), contenu (3), marge droite (1)
-        col_left, col_center, col_right = st.columns([2, 3, 2])
-        main_container = col_center
-    else:
-        # Sur mobile, pas de colonnes
-        main_container = st.container()
+    with main_col:
+        st.header("Explore William's Spotify Data")
     
     with main_container:
         # Initialize chat history
@@ -272,9 +251,9 @@ def main():
     # Interface de chat
     display_chat_interface()
     
-    # Bouton pour vider l'historique centré sur desktop
-    _, col_button, _ = st.columns([1, 3, 1])
-    with col_button:
+    # Bouton pour vider l'historique centré
+    _, button_col, _ = st.columns([1, 2, 1])
+    with button_col:
         if st.button("Clear history"):
             st.session_state.chat_history = []
             st.rerun()
