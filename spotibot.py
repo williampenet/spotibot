@@ -73,20 +73,6 @@ def display_chat_interface():
     """
     st.header("Explore William's Spotify Data")
     
-    # Context for recruiters
-    st.markdown("""
-    **A technical challenge by William Pénet, Product Manager**
-    
-    This side-project was developed in collaboration with Claude (LLM) to:
-    - Demonstrate my data project management skills
-    - Showcase my ability to rapidly prototype technical solutions
-    - Illustrate my aptitude for leveraging AI to create value
-    
-    **Tech stack:** Python • Streamlit • Supabase • SQL • Spotify API • Plotly
-    """)
-    
-    st.divider()
-    
     # Initialize chat history
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
