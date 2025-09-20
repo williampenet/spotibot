@@ -181,7 +181,7 @@ def main():
     Fonction principale de l'application Streamlit
     """
     st.set_page_config(
-    page_title="Spotify Personal Insights - Chat",
+    page_title="Spotibot",
     page_icon="🎵"
     # layout par défaut = "centered" (pas besoin de le spécifier)
 )
