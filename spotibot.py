@@ -101,7 +101,7 @@ Feel free to explore the data to get to know William better!""",
     # Afficher l'historique du chat
     for message in st.session_state.chat_history:
         if message["role"] == "assistant":
-            with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
+            with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon-purple.png"):
                 st.write(message["content"])
         else:
             with st.chat_message(message["role"]):
@@ -128,7 +128,7 @@ Feel free to explore the data to get to know William better!""",
             st.write(prompt)
         
         # Réponse du bot
-        with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
+        with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon-purple.png"):
             with st.spinner("Processing..."):
                 response = send_message_to_chatbot(prompt)
                 
