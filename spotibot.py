@@ -72,21 +72,22 @@ def display_chat_interface():
     Interface de chat dans Streamlit
     """
     
-        # Créer un layout centré style Claude.ai
+    # Créer un layout centré style Claude.ai
     # Ratio adapté pour un contenu centré lisible (environ 700-800px sur desktop)
     _, main_col, _ = st.columns([1, 2, 1])
     
     with main_col:
         st.header("Explore William's Spotify Data")
     
-    with main_container:
-        # Initialize chat history
-        if "chat_history" not in st.session_state:
-            st.session_state.chat_history = []
-            # Professional welcome message
-            welcome_msg = {
-                "role": "assistant",
-                "content": """Welcome! I'm Spotibot. 
+    # Le chat reste en pleine largeur mais visuellement centré
+    # grâce aux colonnes pour les messages
+    
+    # Initialize chat history
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+        welcome_msg = {
+            "role": "assistant",
+            "content": """Welcome! I'm Spotibot. 
 
 I can analyze and visualize William's Spotify data to reveal:
 - His favorite artists and music genres
@@ -102,54 +103,56 @@ I can analyze and visualize William's Spotify data to reveal:
 - "Show me the energy distribution of his favorite tracks"
 
 Feel free to explore the data to get to know William better!""",
-                "timestamp": time.time()
-            }
-            st.session_state.chat_history.append(welcome_msg)
-        
-        # Afficher l'historique du chat
-        for message in st.session_state.chat_history:
-            # Pour l'assistant, utiliser l'avatar personnalisé
+            "timestamp": time.time()
+        }
+        st.session_state.chat_history.append(welcome_msg)
+    
+    # Afficher l'historique dans des colonnes centrées
+    for message in st.session_state.chat_history:
+        _, msg_col, _ = st.columns([1, 2, 1])
+        with msg_col:
             if message["role"] == "assistant":
                 with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
                     st.write(message["content"])
             else:
                 with st.chat_message(message["role"]):
                     st.write(message["content"])
-                
-                # Si le message contient des données de graphique, les afficher
-                if "chart_data" in message and message["chart_data"]:
-                    try:
-                        chart_data = message["chart_data"]
-                        st.json(chart_data)
-                    except Exception as e:
-                        st.error(f"Erreur d'affichage du graphique: {e}")
-        
-        # Zone de saisie du message
-        if prompt := st.chat_input("Type your message here..."):
-            # Ajouter le message utilisateur à l'historique
-            user_message = {
-                "role": "user",
-                "content": prompt,
-                "timestamp": time.time()
-            }
-            st.session_state.chat_history.append(user_message)
             
-            # Afficher le message utilisateur
+            if "chart_data" in message and message["chart_data"]:
+                try:
+                    st.json(message["chart_data"])
+                except Exception as e:
+                    st.error(f"Erreur d'affichage du graphique: {e}")
+    
+    # Input centré
+    _, input_col, _ = st.columns([1, 2, 1])
+    with input_col:
+        prompt = st.chat_input("Type your message here...")
+    
+    if prompt:
+        # Ajouter à l'historique
+        user_message = {
+            "role": "user",
+            "content": prompt,
+            "timestamp": time.time()
+        }
+        st.session_state.chat_history.append(user_message)
+        
+        # Afficher le nouveau message utilisateur
+        _, msg_col, _ = st.columns([1, 2, 1])
+        with msg_col:
             with st.chat_message("user"):
                 st.write(prompt)
             
-            # Afficher un spinner pendant le traitement
+            # Réponse du bot
             with st.chat_message("assistant", avatar="https://jdvrbnajcupzrsneacbm.supabase.co/storage/v1/object/public/Spotibot_img/spotibot-icon.png"):
                 with st.spinner("Processing..."):
-                    # Envoyer le message au chatbot N8N
                     response = send_message_to_chatbot(prompt)
                     
                     if response["success"]:
                         try:
-                            # Parser la réponse du chatbot
                             bot_data = response["data"]
                             
-                            # Extraire le texte de réponse
                             if isinstance(bot_data, dict):
                                 bot_text = bot_data.get("text", "Réponse reçue sans texte")
                                 chart_data = bot_data.get("chart", None)
@@ -157,17 +160,14 @@ Feel free to explore the data to get to know William better!""",
                                 bot_text = str(bot_data)
                                 chart_data = None
                             
-                            # Afficher la réponse
                             st.write(bot_text)
                             
-                            # Afficher le graphique si présent
                             if chart_data:
                                 try:
                                     st.json(chart_data)
                                 except Exception as e:
                                     st.error(f"Erreur d'affichage du graphique: {e}")
                             
-                            # Ajouter à l'historique
                             assistant_message = {
                                 "role": "assistant",
                                 "content": bot_text,
@@ -180,7 +180,6 @@ Feel free to explore the data to get to know William better!""",
                             error_msg = f"Erreur lors du traitement de la réponse: {str(e)}"
                             st.error(error_msg)
                             
-                            # Ajouter le message d'erreur à l'historique
                             error_message = {
                                 "role": "assistant",
                                 "content": error_msg,
@@ -191,13 +190,15 @@ Feel free to explore the data to get to know William better!""",
                         error_msg = f"Erreur: {response['error']}"
                         st.error(error_msg)
                         
-                        # Ajouter le message d'erreur à l'historique
                         error_message = {
                             "role": "assistant",
                             "content": error_msg,
                             "timestamp": time.time()
                         }
                         st.session_state.chat_history.append(error_message)
+        
+        # Rerun pour afficher le nouvel historique
+        st.rerun()
 
 def main():
     """
